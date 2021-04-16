@@ -16,7 +16,7 @@ export default function Menu() {
         <div className="user-panel mt-3 pb-3 mb-3 d-flex">
           <div className="image">
             <img
-              src="dist/img/winkwink.jpg"
+              src="/dist/img/winkwink.jpg"
               className="img-circle elevation-2"
               alt="User Image"
             />
@@ -66,28 +66,44 @@ export default function Menu() {
             </li>
           </ul>
         </li> */}
-            <Link to="/product_list">
               <li className="nav-item">
-                <a href="#" className="nav-link text-white">
-                  <i className="nav-icon fas fa-th" />
+                <Link to="/product_list" className="nav-link text-white">
+                <i class="nav-icon fas fa-gifts"/>
                   <p>
                     รายการสินค้า
                     {/* <span className="right badge badge-danger">New</span> */}
                   </p>
-                </a>
+                </Link>
               </li>
-            </Link>
-            <Link to="/preorderlot_list">
+         
+       
               <li className="nav-item">
-                <a href="#" className="nav-link text-white">
-                  <i className="nav-icon fas fa-copy" />
+                <Link to="/preorderlot_list" className="nav-link text-white">
+                <i className="nav-icon fas fa-splotch"/>
                   <p>
                     พรีออเดอร์
                     {/* <span className="right badge badge-danger">New</span> */}
                   </p>
-                </a>
+                </Link>
               </li>
-            </Link>
+              <li className="nav-item">
+                <Link to="/order_list" className="nav-link text-white">
+                <i class="nav-icon fas fa-meteor"/>
+                  <p>
+                    ออเดอร์สั่งซื้อ
+                    {/* <span className="right badge badge-danger">New</span> */}
+                  </p>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/order_list" className="nav-link text-white">
+                <i class="nav-icon fas fa-rocket"/>
+                  <p>
+                    รายการพร้อมจัดส่ง
+                    {/* <span className="right badge badge-danger">New</span> */}
+                  </p>
+                </Link>
+              </li>
 
             {/* <li className="nav-item has-treeview">
           <a href="#" className="nav-link">

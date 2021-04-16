@@ -1,7 +1,10 @@
 import { useState,useEffect } from "react";
 import Axios from "axios"
 import Modal_openpre from "./Modal_openpre";
-
+import moment from 'moment';
+import 'moment/locale/th'
+import { Link } from "react-router-dom";
+moment.locale('th');
 function Preorderlot_list(){
   const [preorderlotList,setpreorderlotList] = useState([]);
   const [modal, setModal] = useState(false);
@@ -9,7 +12,7 @@ function Preorderlot_list(){
 
   const getpreorderlotList=()=>{
     Axios.get('http://localhost:3001/preorderlot_list').then((response)=>{
-      setpreorderlotList(response);
+      setpreorderlotList(response.data);
     })
   }
 
@@ -61,33 +64,43 @@ useEffect(() => {
                   <table className="table table-striped table-valign-middle">
                     <thead>
                       <tr>
-                        <th>รหัสรอบพรี</th>
-                        <th>รูปสินค้า</th>
-                        <th>สินค้าเปิดพรี</th>
-                        <th>วันเปิดพรี</th>
-                        <th>จำนวนออเดอร์</th>
-                        <th>รายละเอียด</th>
+                        <th className="text-center">รหัสพรีออเดอร์</th>
+                        <th className="text-center">รูปสินค้า</th>
+                        <th className="text-center">สินค้าที่เปิดรอบ</th>
+                        <th className="text-center">วันเปิด-ปิดรอบ</th>
+                        <th className="text-center">สถานะ</th>
+                        <th className="text-center">รายละเอียด</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td >LOT20210200001</td>
-                        <td>
+                      {[...preorderlotList].reverse().map((val,key)=>{
+
+                   return(
+                      <tr key={key}>
+                        <td className="text-center">{val.f_preorderlot_id}</td>
+                        <td className="text-center">
                           <img
-                            src="https://images.unsplash.com/photo-1613337802611-cccb1d8c9448?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+                            src={val.f_prod_img}
                             alt="Product 1"
                             className="img-size-50 mr-2"
                           />
                         </td>
-                        <td>กล่องใส่กระดาษ <br/>asdsad</td>
-                        <td>2/17/2021 10.00น.</td>
-                        <td>105</td>
-                        <td>
-                          <button className="btn btn-info">
+                        <td>{val.f_prod_id}<br/>{val.f_prod_name}</td>
+                        <td className="text-center">{moment(val.f_open_date).add(543, "year").format('DD MMM YYYY')}<br/>-<br/>{moment(val.f_close_date).add(543, "year").format('DD MMM YYYY')}</td>
+                        
+                        <td className="text-center"><h5 className="mb-1">{val.f_preorderlot_status == 1 ? (<span className="badge badge-primary">กำลังเปิดรอบ</span>)
+                        : val.f_preorderlot_status == 2 ? (<span className="badge badge-secondary">ปิดรอบแล้ว</span>) 
+                        : (<span className="badge badge-danger">ยกเลิก</span>)}</h5></td>
+                        <td className="text-center">
+                        <Link to={`/preorder_detail/${val.f_preorderlot_id}`}>
+                        <button className="btn btn-info">
                             <i className="fas fa-search" /> รายละเอียด
                           </button>
+                          </Link>
                         </td>
                       </tr>
+                   );
+                         })}
                     </tbody>
                   </table>
                 </div>
@@ -99,7 +112,7 @@ useEffect(() => {
         </div>
         {/* /.container-fluid */}
       </div>
-      <Modal_openpre modal={modal} toggle={toggle}>
+      <Modal_openpre modal={modal} toggle={toggle} reloaddata={getpreorderlotList}>
       </Modal_openpre>
       {/* /.content */}
     </div>

@@ -1,21 +1,25 @@
 import { useState, useEffect } from "react";
 import Axios from "axios";
 import Modal_product from "./Modal_product";
-
-
+import { Link } from "react-router-dom";
 
 function Product_list(props) {
   const [productList, setproductList] = useState([]);
   const [modal, setModal] = useState(false);
+  const [selectprodID, setselectprodID] = useState("");
   const toggle = () => setModal(!modal);
+
+  const callprodModal = async (prodID) => {
+    await setselectprodID(prodID);
+    await toggle();
+  };
 
   const getproductList = () => {
     Axios.get("http://localhost:3001/product_list").then((response) => {
       setproductList(response.data);
+      console.log(response.data);
     });
   };
-
-
 
   useEffect(() => {
     getproductList();
@@ -31,7 +35,12 @@ function Product_list(props) {
               <h1 className="m-0 text-dark">รายการสินค้า</h1>
             </div>
             <div className="col-sm-2">
-              <button className="btn btn-info container-fluid" onClick={()=>{toggle()}}>
+              <button
+                className="btn btn-info container-fluid"
+                onClick={() => {
+                  callprodModal("");
+                }}
+              >
                 <i className="fas fa-plus" /> เพิ่มสินค้า
               </button>
             </div>
@@ -48,9 +57,16 @@ function Product_list(props) {
             <div className="col-lg-12">
               {/* /.card */}
               <div className="card">
-                {/* <div className="card-header border-0">
-                  <h3 className="card-title">รายการสินค้า</h3> */}
-                {/* <div className="card-tools">
+                <div className="card-header border-0 text-right">
+                  <button
+                    className="btn btn-link"
+                    onClick={() => {
+                      getproductList();
+                    }}
+                  >
+                    <i className="fas fa-redo-alt"></i> รีเฟรช
+                  </button>
+                  {/* <div className="card-tools">
                     <a href="#" className="btn btn-tool btn-sm">
                       <i className="fas fa-download" />
                     </a>
@@ -58,7 +74,7 @@ function Product_list(props) {
                       <i className="fas fa-bars" />
                     </a>
                   </div> */}
-                {/* </div> */}
+                </div>
                 <div className="card-body table-responsive p-0">
                   <table className="table table-striped table-valign-middle">
                     <thead>
@@ -66,14 +82,14 @@ function Product_list(props) {
                         <th className="text-center">รูปสินค้า</th>
                         <th className="text-center">รหัสสินค้า</th>
                         <th className="text-center">ชื่อสินค้า</th>
-                        <th className="text-center">แก้ไข</th>
-                        <th className="text-center">รายละเอียด</th>
+                        <th className="text-center">ลิงค์</th>
+                        <th className="text-center"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {productList.map((val, key) => {
                         return (
-                          <tr>
+                          <tr key={key}>
                             <td className="text-center">
                               <img
                                 src={val.f_prod_img}
@@ -83,14 +99,26 @@ function Product_list(props) {
                             <td>{val.f_prod_id}</td>
                             <td>{val.f_prod_name}</td>
                             <td className="text-center">
-                              <button className="btn btn-warning" onClick={()=>{toggle()}}>
-                                <i className="fas fa-edit" /> แก้ไข
-                              </button>
+                              <a href={val.f_prod_link} target="_blank">
+                                ไปยังร้านค้า
+                              </a>
+                            
                             </td>
                             <td className="text-center">
-                              <button className="btn btn-info ">
-                                <i className="fas fa-search" /> รายละเอียด
-                              </button>
+                              <Link to={`/product_detail/${val.f_prod_id}`}>
+                                <button className="btn btn-info ">
+                                  <i className="fas fa-search" /> รายละเอียด
+                                </button>
+                              </Link>
+                              <br/>
+                              {/* <button
+                                className="btn btn-info "
+                                onClick={() => {
+                                  callprodModal(val.f_prod_id);
+                                }}
+                              >
+                                <i className="fas fa-plus" /> เพิ่มสินค้า
+                              </button> */}
                             </td>
                           </tr>
                         );
@@ -107,8 +135,12 @@ function Product_list(props) {
         {/* /.container-fluid */}
       </div>
       {/* /.content */}
-      <Modal_product modal={modal} toggle={toggle}>
-      </Modal_product>
+      <Modal_product
+        modal={modal}
+        toggle={toggle}
+        type_process={'add'}
+        reload={getproductList}
+      ></Modal_product>
     </div>
   );
 }
